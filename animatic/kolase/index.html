@@ -15,14 +15,14 @@ body{font-family:'Inter','Liberation Sans',sans-serif;color:var(--ink);position:
 /* kepala */
 .badge{position:absolute;top:34px;left:34px;background:var(--ink);color:var(--paper);font-weight:900;font-size:26px;padding:8px 18px;transform:rotate(-2deg);z-index:20;letter-spacing:.5px}
 .tape{position:absolute;width:90px;height:28px;background:#e8d8a888;transform:rotate(-8deg)}
-.hl{position:absolute;top:112px;left:30px;right:30px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:10}
+.hl{position:absolute;top:100px;left:30px;right:30px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:10}
 .lab{display:inline-block;font-weight:900;font-size:62px;line-height:1.04;padding:8px 22px 10px;text-transform:uppercase;letter-spacing:-1px;
  clip-path:polygon(0 6%,3% 0,97% 4%,100% 0,99% 94%,96% 100%,2% 96%,0 100%);animation:labin .5s cubic-bezier(.2,1.5,.4,1) both}
 .lab.h{background:var(--honey);color:var(--ink)}.lab.k{background:var(--ink);color:var(--paper)}.lab.c{background:var(--coral);color:var(--paper)}.lab.t{background:var(--teal);color:var(--paper)}.lab.p{background:var(--plum);color:var(--paper)}
 .lab.s{font-size:48px}
 @keyframes labin{from{transform:translateY(-60px) scale(.6) rotate(var(--r,-2deg));opacity:0}60%{opacity:1}to{transform:rotate(var(--r,-2deg))}}
 /* panggung */
-.stage{position:absolute;left:0;top:360px;width:720px;height:580px}
+.stage{position:absolute;left:0;top:320px;width:720px;height:580px;transform:scale(.8);transform-origin:50% 0}
 .abs{position:absolute}
 .pop{animation:pop .55s cubic-bezier(.2,1.6,.4,1) var(--d,0s) both}
 @keyframes pop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(var(--r,0deg))}}
@@ -38,7 +38,7 @@ body{font-family:'Inter','Liberation Sans',sans-serif;color:var(--ink);position:
 @keyframes spin{to{transform:rotate(360deg)}}
 .tag{position:absolute;background:var(--paper);border:3px solid var(--ink);font-weight:800;font-size:26px;padding:6px 14px;box-shadow:4px 5px 0 var(--ink)}
 /* subtitle */
-.sub{position:absolute;left:28px;right:28px;top:966px;background:#fbf5e6;padding:24px 26px 28px;transform:rotate(-.8deg);
+.sub{position:absolute;left:28px;right:28px;top:800px;background:#fbf5e6;padding:24px 26px 28px;transform:rotate(-.8deg);
  box-shadow:5px 7px 0 rgba(58,35,18,.28);clip-path:polygon(0 3%,4% 0,50% 2%,96% 0,100% 3%,99% 97%,60% 100%,10% 98%,0 100%);z-index:30;
  font-weight:800;font-size:37px;line-height:1.3;min-height:190px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:0 10px}
 .sub span{color:rgba(58,35,18,.28);animation:w .01s linear var(--wd) both}
@@ -55,6 +55,7 @@ body{font-family:'Inter','Liberation Sans',sans-serif;color:var(--ink);position:
 <div id="root"></div>
 <div id="time">0:00</div><div id="mark">KOLASE – VERSI GRATIS</div><div id="prog"></div>
 
+<script src="timing.js" onerror=""></script>
 <script>
 /* ---------- bahan ilustrasi (vektor buatan tangan) ---------- */
 const bact=(c='#2a7f86',w=150,id='')=>`<svg class="sh" width="${w}" height="${w*.62}" viewBox="0 0 150 93"><g id="${id}">
@@ -136,7 +137,7 @@ const S=[
  stage:`<div class="abs pop" style="left:110px;top:40px;--d:.4s"><div style="width:500px;height:500px;border-radius:50%;border:34px solid #2a7f86;opacity:.9"></div></div>
  <div class="abs pop" style="left:170px;top:100px;--d:2.4s"><div style="width:380px;height:380px;border-radius:50%;border:34px solid #d4a90f"></div></div>
  <div class="abs pop" style="left:230px;top:160px;--d:4.6s"><div style="width:260px;height:260px;border-radius:50%;border:34px solid #6b3fa0;background:#f0a500"></div></div>
- <div class="abs pop" style="left:20px;top:60px;--d:1s;--r:-4deg"><div class="tag" style="background:#2a7f86;color:#fff">KERING</div></div>
+ <div class="abs pop" style="left:20px;top:150px;--d:1s;--r:-4deg"><div class="tag" style="background:#2a7f86;color:#fff">KERING</div></div>
  <div class="abs pop" style="left:540px;top:110px;--d:3s;--r:3deg"><div class="tag" style="background:#f4d03f">ASAM</div></div>
  <div class="abs pop" style="left:20px;top:470px;--d:5.2s;--r:2deg"><div class="tag" style="background:#6b3fa0;color:#fff">ANTISEPTIK</div></div>`},
 {d:8,vo:'Tiga lapis pertahanan dalam satu sendok.',head:L('k','3 lapis',-2,0)+L('h','1 sendok',1.5,.6),
@@ -152,13 +153,23 @@ const S=[
  <div class="abs pop bob" style="left:360px;top:130px;--d:4s;font-size:130px;font-weight:900;color:#e2552d">?</div>`,css:`
  .mold{animation:fade 3s ease 3s both}`}
 ];
+const C=window.CFG;
+S.forEach((s,i)=>{s.od=s.d;if(C){s.d=C.bounds[i+1]-C.bounds[i];s.k=Math.min(1.6,Math.max(.8,s.od/s.d));}else s.k=1;});
 const total=S.reduce((a,s)=>a+s.d,0);
+function wordTimes(words,a,b){
+ let segs=[],cur=a;
+ if(C){(C.sil).forEach(([s,e])=>{if(e<=a||s>=b)return;if(s>cur)segs.push([cur,Math.min(s,b)]);cur=Math.max(cur,e);});if(cur<b)segs.push([cur,b]);}
+ else segs=[[a+.3,b-.7]];
+ const T=segs.reduce((x,[s,e])=>x+e-s,0),len=words.map(w=>w.length+1),L=len.reduce((x,y)=>x+y,0);let acc=0;
+ return words.map((w,j)=>{let pos=acc/L*T;acc+=len[j];for(const [s,e] of segs){if(pos<=e-s)return s+pos-a;pos-=e-s;}return b-a;});
+}
 let t0=0,html='',extra='';
 S.forEach((s,i)=>{
  const words=s.vo.split(' ');
- const subs=words.map((w,j)=>`<span style="--wd:${(.3+j/words.length*(s.d-1)).toFixed(2)}s">${w}</span>`).join('');
+ const wt=wordTimes(words,t0,t0+s.d);
+ const subs=words.map((w,j)=>`<span style="--wd:${(wt[j]*s.k).toFixed(2)}s">${w}</span>`).join('');
  const long=words.length>=17;
- html+=`<section class="scene" data-s="${t0}" data-d="${s.d}"><div class="hl">${s.head}</div><div class="stage">${s.stage}</div><div class="sub" style="${long?'font-size:32px;min-height:200px;top:955px':''}">${subs}</div></section>`;
+ html+=`<section class="scene" data-s="${t0}" data-d="${s.d}" data-k="${s.k}"><div class="hl">${s.head}</div><div class="stage">${s.stage}</div><div class="sub" style="${long?'font-size:32px;min-height:200px;top:790px':''}">${subs}</div></section>`;
  if(s.css)extra+=s.css; t0+=s.d;
 });
 const st=document.createElement('style');st.textContent=extra;document.head.appendChild(st);
@@ -169,10 +180,11 @@ window.seek=function(t){
  scenes.forEach(sc=>{
   const s=+sc.dataset.s,d=+sc.dataset.d,on=t>=s&&t<s+d;
   sc.style.display=on?'block':'none';
-  if(on){sc.getAnimations({subtree:true}).forEach(a=>{a.pause();a.currentTime=(t-s)*1000;});}
+  if(on){sc.getAnimations({subtree:true}).forEach(a=>{a.pause();a.currentTime=(t-s)*(+sc.dataset.k)*1000;});}
  });
  document.getElementById('prog').style.width=(t/total*100)+'%';
  const m=Math.floor(t/60),sec=Math.floor(t%60);document.getElementById('time').textContent=m+':'+String(sec).padStart(2,'0');
 };
+if(C){['mark','time','prog'].forEach(i=>document.getElementById(i).style.display='none');}
 seek(0);
 </script></body></html>
