@@ -130,14 +130,14 @@ const S=[
  <div class="abs b1" style="left:240px;top:340px">${bubble('H₂O₂')}</div><div class="abs b2" style="left:400px;top:360px">${bubble('H₂O₂')}</div><div class="abs b3" style="left:320px;top:380px">${bubble('H₂O₂')}</div>
  <div class="abs die" style="left:240px;top:470px">${bact('#2a7f86',130)}</div><div class="abs die" style="left:520px;top:490px;animation-delay:10.8s">${bact('#2a7f86',110)}</div>
  <div class="abs stamp" style="left:200px;top:70px"><span class="lab c" style="font-size:120px;animation:none">K.O.</span></div>
- <div class="tag pop" style="left:170px;top:466px;--d:14.5s;--r:-2deg;background:#fff">${score(0,3)}</div>`,css:`
- .bee{animation:fly 3s cubic-bezier(.4,0,.3,1) .4s both}@keyframes fly{from{transform:translate(400px,-300px) rotate(15deg)}to{transform:translate(-80px,120px) rotate(-8deg)}}
+ <div class="tag pop" style="left:170px;top:466px;--d:15.1s;--r:-2deg;background:#fff">${score(0,3)}</div>`,css:`
+ .bee{animation:fly 3s cubic-bezier(.4,0,.3,1) .4s both,bye .5s ease 5.5s forwards}@keyframes bye{to{opacity:0}}@keyframes fly{from{transform:translate(400px,-300px) rotate(15deg)}to{transform:translate(-80px,120px) rotate(-8deg)}}
  .flap{animation:flap .12s linear infinite;transform-origin:90px 40px}@keyframes flap{50%{transform:scaleY(.6)}}
  .tmp{animation:pop .55s cubic-bezier(.2,1.6,.4,1) var(--d) both,gone .2s linear 7.4s forwards}@keyframes gone{to{opacity:0;transform:scale(0)}}
  .shk2{animation:shake .35s linear 7.5s infinite}
  .b1{animation:rise 3.4s ease-out 8s both}.b2{animation:rise 3.4s ease-out 8.8s both}.b3{animation:rise 3.4s ease-out 9.6s both}@keyframes rise{from{opacity:0;transform:translateY(60px) scale(.5)}30%{opacity:1}to{opacity:0;transform:translateY(-140px) scale(1.1)}}
  .die{animation:die 2s ease 10.2s both}@keyframes die{to{transform:scale(.3) rotate(40deg);opacity:0;filter:grayscale(1)}}
- .stamp{animation:stamp .5s cubic-bezier(.2,1.6,.4,1) 12s both;transform:rotate(-8deg)}@keyframes stamp{from{transform:scale(3) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}`},
+ .stamp{animation:stamp .5s cubic-bezier(.2,1.6,.4,1) 13.9s both;transform:rotate(-8deg)}@keyframes stamp{from{transform:scale(3) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}`},
 {d:10.5,vo:'Satu hal lagi. Kalau madumu mengeras dan berpasir, itu bukan basi. Itu cuma gulanya yang mengkristal. Rendam botolnya di air hangat, dan madunya kembali cair.',head:L('c','Bukan basi!',-2,0),
  stage:`<div class="abs slam" style="left:45px;top:130px;--d:.4s;--r:-3deg">${jar2(230,'#e8b04a',true)}</div>
  <div class="tag pop" style="left:30px;top:70px;--d:1.6s;--r:-3deg;background:#fff3c4">gula mengkristal ≠ basi</div>
