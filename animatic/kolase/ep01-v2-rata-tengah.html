@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<title>Kok Bisa? #01 v2 – Bakteri vs Madu</title>
+<style>
+:root{--paper:#f3e9d2;--ink:#3a2312;--honey:#f0a500;--honey2:#c77d00;--teal:#2a7f86;--coral:#e2552d;--lemon:#f4d03f;--plum:#6b3fa0;--water:#6fb7e9}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:720px;height:1280px;overflow:hidden;background:var(--paper)}
+body{font-family:'Inter','Liberation Sans',sans-serif;color:var(--ink);position:relative}
+/* kertas: grain + halftone */
+#bg{position:absolute;inset:0;background:
+ radial-gradient(circle at 1px 1px,#3a231214 1.2px,transparent 1.6px) 0 0/14px 14px,var(--paper)}
+#grain{position:absolute;inset:0;opacity:.22;mix-blend-mode:multiply;pointer-events:none;z-index:50}
+.scene{position:absolute;inset:0;display:none}
+.sh{filter:drop-shadow(3px 5px 0 rgba(58,35,18,.22))}
+/* kepala */
+.badge{position:absolute;top:100px;left:50%;background:var(--ink);color:var(--paper);font-weight:900;font-size:26px;padding:8px 18px;transform:translateX(-50%) rotate(-2deg);white-space:nowrap;z-index:20;letter-spacing:.5px}
+.tape{position:absolute;width:90px;height:28px;background:#e8d8a888;transform:rotate(-8deg)}
+.hl{position:absolute;top:164px;left:80px;right:80px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:10}
+.lab{display:inline-block;font-weight:900;font-size:56px;line-height:1.04;padding:8px 22px 10px;text-transform:uppercase;letter-spacing:-1px;
+ clip-path:polygon(0 6%,3% 0,97% 4%,100% 0,99% 94%,96% 100%,2% 96%,0 100%);animation:labin .5s cubic-bezier(.2,1.5,.4,1) both}
+.lab.h{background:var(--honey);color:var(--ink)}.lab.k{background:var(--ink);color:var(--paper)}.lab.c{background:var(--coral);color:var(--paper)}.lab.t{background:var(--teal);color:var(--paper)}.lab.p{background:var(--plum);color:var(--paper)}
+.lab.s{font-size:42px}
+@keyframes labin{from{transform:translateY(-60px) scale(.6) rotate(var(--r,-2deg));opacity:0}60%{opacity:1}to{transform:rotate(var(--r,-2deg))}}
+/* panggung */
+.stage{position:absolute;left:0;top:340px;width:720px;height:580px;transform:scale(.78);transform-origin:50% 0}
+.abs{position:absolute}
+.pop{animation:pop .55s cubic-bezier(.2,1.6,.4,1) var(--d,0s) both}
+@keyframes pop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(var(--r,0deg))}}
+.fade{animation:fade .5s ease var(--d,0s) both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.slam{animation:slam .45s cubic-bezier(.2,1.2,.3,1) var(--d,0s) both}
+@keyframes slam{from{transform:translateY(-500px) rotate(-8deg)}70%{transform:translateY(8px) rotate(1deg)}to{transform:translateY(0) rotate(var(--r,0deg))}}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -14px}}
+.shake{animation:shake .35s linear infinite}
+@keyframes shake{0%,100%{translate:0 0}25%{translate:-5px 2px}75%{translate:5px -2px}}
+.spin{animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tag{position:absolute;background:var(--paper);border:3px solid var(--ink);font-weight:800;font-size:26px;padding:6px 14px;box-shadow:4px 5px 0 var(--ink)}
+/* subtitle */
+.sub{position:absolute;left:80px;right:80px;top:830px;height:182px;background:#fbf5e6;transform:rotate(-.8deg);
+ box-shadow:5px 7px 0 rgba(58,35,18,.28);clip-path:polygon(0 3%,4% 0,50% 2%,96% 0,100% 3%,99% 97%,60% 100%,10% 98%,0 100%);z-index:30;
+ font-weight:800;font-size:36px;line-height:1.28}
+.ck{position:absolute;left:24px;right:24px;top:18px;display:flex;flex-wrap:wrap;justify-content:center;text-align:center;gap:0 9px;opacity:0;animation:ckin .01s linear var(--cs) both,ckout .01s linear var(--ce) forwards}
+@keyframes ckin{to{opacity:1}}@keyframes ckout{to{opacity:0}}
+.sub span{color:rgba(58,35,18,.28);animation:w .01s linear var(--wd) both}
+@keyframes w{to{color:#3a2312}}
+.sub:before{content:"";position:absolute;top:-6px;left:40%;width:90px;height:24px;background:#e8d8a8aa;transform:rotate(3deg)}
+/* progres */
+#prog{position:absolute;left:0;bottom:0;height:16px;background:var(--ink);z-index:40}
+#time{position:absolute;left:34px;bottom:34px;font-weight:800;font-size:22px;color:#3a231299;z-index:40}
+#mark{position:absolute;right:34px;bottom:34px;font-weight:800;font-size:22px;color:#3a231299;z-index:40}
+</style></head><body>
+<div id="bg"></div>
+<svg id="grain" width="720" height="1280"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  0 0 0 .9 0"/></filter><rect width="720" height="1280" filter="url(#n)"/></svg>
+<div class="badge sh">#01 KOK BISA?</div>
+<div id="root"></div>
+<div id="time">0:00</div><div id="mark">KOLASE – VERSI GRATIS</div><div id="prog"></div>
+
+<style>
+.shr{animation:shr 5s ease 2s both}@keyframes shr{to{transform:scale(.55) translateY(40px);filter:grayscale(1) sepia(.4)}}
+.flow{animation:flow 1.5s ease-in var(--d) both}@keyframes flow{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}100%{opacity:0;transform:translate(200px,200px) scale(.4)}}
+</style>
+<script src="timing-ep01-v2.js" onerror=""></script>
+<script>
+/* ---------- bahan ilustrasi (vektor buatan tangan) ---------- */
+const bact=(c='#2a7f86',w=150,id='')=>`<svg class="sh" width="${w}" height="${w*.62}" viewBox="0 0 150 93"><g id="${id}">
+<path d="M12 46 q-14 -10 -10 -22 M12 52 q-14 12 -8 24" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/>
+<rect x="14" y="14" width="124" height="66" rx="33" fill="${c}"/>
+<g fill="#fff" opacity=".35"><circle cx="48" cy="38" r="6"/><circle cx="80" cy="56" r="5"/><circle cx="104" cy="34" r="7"/><circle cx="64" cy="30" r="3"/><circle cx="116" cy="58" r="4"/></g>
+<circle cx="104" cy="46" r="0" fill="#fff"/></g></svg>`;
+const drop=(w=90,c='#6fb7e9')=>`<svg class="sh" width="${w}" height="${w*1.3}" viewBox="0 0 80 104"><path d="M40 4 C40 4 8 46 8 68 a32 32 0 0 0 64 0 C72 46 40 4 40 4Z" fill="${c}"/><path d="M26 66 a16 16 0 0 0 12 16" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".7"/></svg>`;
+const jar=()=>`<svg class="sh" width="360" height="430" viewBox="0 0 300 360"><path d="M64 96 Q38 130 44 226 Q50 332 150 338 Q250 332 256 226 Q262 130 236 96Z" fill="#a8613a"/>
+<path d="M78 130 Q62 160 66 230 Q72 318 150 322 Q228 318 234 230 Q238 160 222 130Z" fill="#f0a500"/><path d="M92 150 q-10 50 -4 90" stroke="#ffd36a" stroke-width="12" fill="none" stroke-linecap="round"/>
+<rect x="74" y="72" width="152" height="34" rx="8" fill="#8a4b2a"/><path d="M46 150 l18 -10 l-6 18 l14 -4" stroke="#3a2312" stroke-width="5" fill="none" stroke-linejoin="round"/><path d="M254 280 l-18 10 l8 14" stroke="#3a2312" stroke-width="5" fill="none"/>
+<rect x="96" y="205" width="110" height="52" fill="#f3e9d2" transform="rotate(-4 150 230)"/><text x="151" y="240" text-anchor="middle" font-family="Inter" font-weight="900" font-size="26" fill="#3a2312" transform="rotate(-4 150 230)">±3.000 th</text></svg>`;
+const bee=()=>`<svg class="sh" width="170" height="130" viewBox="0 0 170 130"><g class="flap"><ellipse cx="78" cy="32" rx="30" ry="20" fill="#dff1fb" transform="rotate(-25 78 32)"/><ellipse cx="108" cy="30" rx="28" ry="18" fill="#dff1fb" transform="rotate(10 108 30)"/></g>
+<ellipse cx="88" cy="78" rx="62" ry="38" fill="#f0a500"/><path d="M62 42 q-14 36 0 72 M92 40 q-12 38 0 76 M120 46 q-10 32 0 66" stroke="#3a2312" stroke-width="12" fill="none"/>
+<circle cx="146" cy="72" r="20" fill="#3a2312"/><circle cx="152" cy="66" r="5" fill="#fff"/><path d="M28 80 l-22 4 l22 8Z" fill="#3a2312"/><path d="M142 54 q8 -22 22 -26" stroke="#3a2312" stroke-width="4" fill="none"/></svg>`;
+const spoon=(h=470)=>`<svg class="sh" width="${h*.34}" height="${h}" viewBox="0 0 160 470"><rect x="68" y="150" width="24" height="310" rx="12" fill="#8a4b2a"/><ellipse cx="80" cy="90" rx="62" ry="82" fill="#a8613a"/><ellipse cx="80" cy="96" rx="48" ry="66" fill="#f0a500"/><path d="M56 60 q-12 34 -4 64" stroke="#ffd36a" stroke-width="10" fill="none" stroke-linecap="round"/><g class="drip"><path d="M80 170 q-9 14 0 22 q9 -8 0 -22Z" fill="#f0a500"/></g></svg>`;
+const bowl=()=>`<svg class="sh" width="340" height="240" viewBox="0 0 340 240"><path d="M20 100 h300 a150 130 0 0 1 -150 120 a150 130 0 0 1 -150 -120Z" fill="#e9e2d0"/><path d="M20 100 h300" stroke="#3a2312" stroke-width="4"/><path d="M40 100 q20 -50 70 -46 q40 -26 80 -4 q48 -10 70 36 q20 6 12 14 H40Z" fill="#fff"/><g class="mold" fill="#6a8f3a"><circle cx="120" cy="78" r="10"/><circle cx="190" cy="64" r="13"/><circle cx="244" cy="82" r="9"/><circle cx="160" cy="86" r="7"/></g><path d="M90 215 h160" stroke="#3a2312" stroke-width="10" stroke-linecap="round"/></svg>`;
+const lemon=()=>`<svg class="sh" width="130" height="130" viewBox="0 0 130 130"><circle cx="65" cy="65" r="60" fill="#f4d03f"/><circle cx="65" cy="65" r="50" fill="#fbe98a"/><g stroke="#f4d03f" stroke-width="5"><path d="M65 15 V115 M15 65 H115 M30 30 L100 100 M100 30 L30 100"/></g><circle cx="65" cy="65" r="8" fill="#f4d03f"/></svg>`;
+const x=()=>`<svg class="sh" width="120" height="120" viewBox="0 0 120 120"><path d="M20 20 L100 100 M100 20 L20 100" stroke="#e2552d" stroke-width="26" stroke-linecap="round"/></svg>`;
+const star=(c,w=90)=>`<svg class="sh" width="${w}" height="${w}" viewBox="0 0 100 100"><path d="M50 2 L61 34 L96 30 L68 52 L84 84 L50 66 L16 84 L32 52 L4 30 L39 34Z" fill="${c}"/></svg>`;
+const cell=(n,c,t,sub)=>`<div class="abs sh" style="width:170px;height:170px;border-radius:50%;background:${c};display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff6e0;font-weight:900"><div style="font-size:86px;line-height:1">${n}</div><div style="font-size:24px;margin-top:2px">${t}</div></div>`;
+const L=(cls,txt,r,d)=>`<span class="lab ${cls}" style="--r:${r}deg;animation-delay:${d}s">${txt}</span>`;
+
+/* ---------- aset tambahan episode v2 ---------- */
+const jar2=(w=300,fill='#f0a500',grain=false)=>`<svg class="sh" width="${w}" height="${w*1.2}" viewBox="0 0 300 360"><path d="M64 96 Q38 130 44 226 Q50 332 150 338 Q250 332 256 226 Q262 130 236 96Z" fill="#a8613a"/>
+<path d="M78 130 Q62 160 66 230 Q72 318 150 322 Q228 318 234 230 Q238 160 222 130Z" fill="${fill}"/>${grain?'<g fill="#fff3c4" opacity=".85"><circle cx="110" cy="170" r="7"/><circle cx="150" cy="200" r="6"/><circle cx="188" cy="168" r="8"/><circle cx="124" cy="240" r="7"/><circle cx="176" cy="262" r="6"/><circle cx="98" cy="288" r="5"/><circle cx="206" cy="226" r="5"/><circle cx="150" cy="148" r="5"/><circle cx="140" cy="290" r="6"/></g>':'<path d="M92 150 q-10 50 -4 90" stroke="#ffd36a" stroke-width="12" fill="none" stroke-linecap="round"/>'}
+<rect x="74" y="72" width="152" height="34" rx="8" fill="#8a4b2a"/></svg>`;
+const cube=(s=84)=>`<svg class="sh" width="${s}" height="${s}" viewBox="0 0 84 84"><rect x="6" y="6" width="72" height="72" rx="10" fill="#fffaf0"/><path d="M6 20 h72" stroke="#e6dcc3" stroke-width="3"/><circle cx="30" cy="48" r="3" fill="#e6dcc3"/><circle cx="54" cy="58" r="3" fill="#e6dcc3"/></svg>`;
+const pyramid=()=>`<svg width="720" height="250" viewBox="0 0 720 250"><rect y="196" width="720" height="54" fill="#e0c07a"/><path d="M110 196 L340 14 L570 196Z" fill="#d9a441"/><path d="M340 14 L570 196 H340Z" fill="#c48a2c"/><path d="M0 196 q60 -30 120 0" fill="#e0c07a"/></svg>`;
+const pacifier=()=>`<svg class="sh" width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="46" r="34" fill="none" stroke="#e2552d" stroke-width="14"/><path d="M40 90 Q100 70 160 90 Q170 150 100 170 Q30 150 40 90Z" fill="#6fb7e9"/><circle cx="100" cy="118" r="22" fill="#f3e9d2"/></svg>`;
+const bubble=(t)=>`<div class="tag" style="background:#d9f3d0">${t}</div>`;
+const score=(a,b)=>`BAKTERI ${a} – ${b} MADU`;
+const S=[
+{d:4.5,vo:'Bakteri melawan madu. Tiga ronde. Dan bakteri kalah telak.',head:L('t','Bakteri',-2,0)+L('h','VS Madu',1.5,.5),
+ stage:`<div class="abs slam" style="left:10px;top:150px;--d:.2s"><div class="bob">${bact('#2a7f86',260)}</div></div>
+ <div class="abs slam" style="left:440px;top:40px;--d:.5s;--r:3deg"><div class="bob" style="animation-delay:-1s">${jar2(250)}</div></div>
+ <div class="abs pop" style="left:262px;top:140px;--d:1.3s;--r:-6deg;position:absolute"><div class="shake" style="position:relative">${star('#e2552d',190)}<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:58px;color:#fff6e0">VS</div></div></div>`},
+{d:13,vo:'Ribuan tahun lalu, orang Mesir kuno menyimpan madu di makam. Para arkeolog kemudian menemukannya, dan madunya dilaporkan masih terlihat utuh. Rahasianya bukan bahan pengawet. Tapi tiga ronde yang selalu dimenangkan madu.',head:L('k','Makam kuno',-2,0),
+ stage:`<div class="abs fade" style="left:0;top:300px;--d:.3s">${pyramid()}</div>
+ <div class="abs fade" style="left:560px;top:60px;--d:.4s"><svg width="110" height="110"><circle cx="55" cy="55" r="48" fill="#f0a500"/></svg></div>
+ <div class="abs slam" style="left:270px;top:270px;--d:3s;--r:-4deg">${jar2(150)}</div>
+ <div class="tag pop" style="left:30px;top:80px;--d:.9s;--r:-3deg">Mesir kuno</div>
+ <div class="tag pop" style="left:60px;top:190px;--d:5.5s;--r:2deg;background:#fff">madu: masih utuh</div>
+ <div class="abs pop" style="left:40px;top:470px;--d:9.2s"><div class="row">${[1,2,3].map((n,i)=>`<div class="abs pop" style="position:relative;--d:${9.2+i*.8}s"><div class="sh" style="width:110px;height:110px;border-radius:50%;background:${['#2a7f86','#d4a90f','#6b3fa0'][i]};color:#fff6e0;font-weight:900;font-size:58px;display:flex;align-items:center;justify-content:center">${n}</div></div>`).join('')}<div class="tag pop" style="position:relative;--d:11.8s;--r:-2deg">3 RONDE</div></div></div>`},
+{d:15,vo:'Ronde satu: kekeringan. Bakteri butuh air untuk hidup. Tapi madu hampir semuanya gula, dan airnya cuma sekitar seperlima. Gula yang sangat pekat itu menarik air keluar dari tubuh bakteri. Bakteri pun mengerut dan kering. Satu nol untuk madu.',head:L('t','Ronde 1',-2,0)+L('h','Kering',1.5,.5),
+ stage:`<div class="abs shr" style="left:30px;top:200px;animation-delay:6s">${bact('#2a7f86',220)}</div>
+ <div class="abs fade" style="left:340px;top:150px;--d:2.5s"><div style="display:grid;grid-template-columns:repeat(3,90px);gap:12px">${[0,1,2,3,4,5].map(()=>cube()).join('')}</div></div>
+ <div class="abs flow" style="left:230px;top:230px;--d:7s">${drop(44)}</div><div class="abs flow" style="left:220px;top:240px;--d:8.3s">${drop(44)}</div><div class="abs flow" style="left:240px;top:225px;--d:9.6s">${drop(44)}</div><div class="abs flow" style="left:225px;top:235px;--d:10.9s">${drop(44)}</div>
+ <div class="tag pop" style="left:30px;top:90px;--d:3.5s;--r:-2deg">bakteri butuh AIR</div>
+ <div class="tag pop" style="left:340px;top:420px;--d:5s;--r:2deg;background:#fff3c4">gula pekat menarik air</div>
+ <div class="tag pop" style="left:170px;top:490px;--d:13s;--r:-2deg;background:#fff">${score(0,1)}</div>`},
+{d:10,vo:'Ronde dua: keasaman. pH madu sekitar tiga sampai empat, hampir sama dengan jus jeruk. Kebanyakan bakteri nggak tahan hidup di lingkungan seasam itu. Dua nol.',head:L('c','Ronde 2',-2,0)+L('h','Asam',1.5,.5),
+ stage:`<div class="abs fade" style="left:40px;top:150px;width:640px;--d:.5s"><div style="height:60px;border:4px solid #3a2312;background:linear-gradient(90deg,#e2552d,#f4d03f 30%,#6fb04a 50%,#2a7f86 75%,#2e4fa0)"></div>
+ <div style="display:flex;justify-content:space-between;font-weight:900;font-size:24px;margin-top:6px"><span>0 asam</span><span>7</span><span>14 basa</span></div></div>
+ <div class="abs pin" style="left:30px;top:70px"><div class="tag" style="background:#f0a500;position:relative">MADU ▼</div></div>
+ <div class="abs pop" style="left:70px;top:300px;--d:3.8s">${lemon()}</div><div class="tag pop" style="left:220px;top:340px;--d:4.3s;--r:2deg">≈ jus jeruk</div>
+ <div class="abs pop" style="left:450px;top:300px;--d:6s">${bact('#2a7f86',150)}</div><div class="abs pop" style="left:480px;top:290px;--d:6.8s">${x()}</div>
+ <div class="tag pop" style="left:170px;top:490px;--d:8.3s;--r:-2deg;background:#fff">${score(0,2)}</div>`,css:`
+ .pin{animation:pin 2.6s cubic-bezier(.3,1.3,.4,1) 1s both}@keyframes pin{from{transform:translateX(280px)}to{transform:translateX(0)}}`},
+{d:16,vo:'Ronde tiga, dan ini pukulan telaknya. Lebah menambahkan enzim ke nektar. Enzim ini diam selama madu pekat. Tapi begitu madu terkena sedikit air, enzimnya bangun dan menghasilkan hidrogen peroksida, zat antiseptik yang membunuh kuman. Bakteri yang masih bertahan? Habis. Tiga nol.',head:L('p','Ronde 3',-2,0)+L('k','Enzim',1.5,.5),
+ stage:`<div class="abs bee" style="left:300px;top:20px">${bee()}</div>
+ <div class="abs fade" style="left:90px;top:330px;--d:.4s;scale:.7;transform-origin:0 0"><svg class="sh" width="300" height="300" viewBox="0 0 300 300"><g fill="#e2552d"><circle cx="150" cy="60" r="46"/><circle cx="150" cy="240" r="46"/><circle cx="60" cy="150" r="46"/><circle cx="240" cy="150" r="46"/></g><circle cx="150" cy="150" r="52" fill="#f4d03f"/></svg></div>
+ <div class="abs pop" style="left:290px;top:230px;--d:4.5s"><div class="bob"><div class="shk2"><svg class="sh" width="150" height="90" viewBox="0 0 150 90"><rect x="4" y="10" width="142" height="70" rx="35" fill="#6b3fa0"/><circle cx="55" cy="45" r="7" fill="#fff"/><circle cx="95" cy="45" r="7" fill="#fff"/><path d="M55 62 q20 14 40 0" stroke="#fff" stroke-width="5" fill="none"/></svg></div></div></div>
+ <div class="tag tmp" style="left:440px;top:200px;--d:5s;--r:3deg;background:#e9dcff">enzim (diam)</div>
+ <div class="abs pop" style="left:450px;top:230px;--d:7.5s;font-size:90px;font-weight:900;color:#e2552d">!</div>
+ <div class="abs b1" style="left:240px;top:340px">${bubble('H₂O₂')}</div><div class="abs b2" style="left:400px;top:360px">${bubble('H₂O₂')}</div><div class="abs b3" style="left:320px;top:380px">${bubble('H₂O₂')}</div>
+ <div class="abs die" style="left:240px;top:470px">${bact('#2a7f86',130)}</div><div class="abs die" style="left:520px;top:490px;animation-delay:10.8s">${bact('#2a7f86',110)}</div>
+ <div class="abs stamp" style="left:130px;top:250px"><span class="lab c" style="font-size:120px;animation:none">K.O.</span></div>
+ <div class="tag pop" style="left:170px;top:500px;--d:14.5s;--r:-2deg;background:#fff">${score(0,3)}</div>`,css:`
+ .bee{animation:fly 3s cubic-bezier(.4,0,.3,1) .4s both}@keyframes fly{from{transform:translate(400px,-300px) rotate(15deg)}to{transform:translate(-80px,120px) rotate(-8deg)}}
+ .flap{animation:flap .12s linear infinite;transform-origin:90px 40px}@keyframes flap{50%{transform:scaleY(.6)}}
+ .tmp{animation:pop .55s cubic-bezier(.2,1.6,.4,1) var(--d) both,gone .2s linear 7.4s forwards}@keyframes gone{to{opacity:0;transform:scale(0)}}
+ .shk2{animation:shake .35s linear 7.5s infinite}
+ .b1{animation:rise 3.4s ease-out 8s both}.b2{animation:rise 3.4s ease-out 8.8s both}.b3{animation:rise 3.4s ease-out 9.6s both}@keyframes rise{from{opacity:0;transform:translateY(60px) scale(.5)}30%{opacity:1}to{opacity:0;transform:translateY(-140px) scale(1.1)}}
+ .die{animation:die 2s ease 10.2s both}@keyframes die{to{transform:scale(.3) rotate(40deg);opacity:0;filter:grayscale(1)}}
+ .stamp{animation:stamp .5s cubic-bezier(.2,1.6,.4,1) 12s both;transform:rotate(-8deg)}@keyframes stamp{from{transform:scale(3) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}`},
+{d:10.5,vo:'Satu hal lagi. Kalau madumu mengeras dan berpasir, itu bukan basi. Itu cuma gulanya yang mengkristal. Rendam botolnya di air hangat, dan madunya kembali cair.',head:L('c','Bukan basi!',-2,0),
+ stage:`<div class="abs slam" style="left:20px;top:130px;--d:.4s;--r:-3deg">${jar2(230,'#e8b04a',true)}</div>
+ <div class="tag pop" style="left:30px;top:70px;--d:1.6s;--r:-3deg;background:#fff3c4">gula mengkristal ≠ basi</div>
+ <div class="abs pop" style="left:285px;top:230px;--d:5s;font-size:90px;font-weight:900;color:#2a7f86">➜</div>
+ <div class="abs pop" style="left:380px;top:200px;--d:5.5s"><svg class="sh" width="300" height="260" viewBox="0 0 300 260"><path d="M20 70 h260 q0 150 -130 170 q-130 -20 -130 -170Z" fill="#6fb7e9"/><path d="M20 70 h260" stroke="#3a2312" stroke-width="5"/><g class="stm" fill="none" stroke="#3a2312" stroke-width="6" stroke-linecap="round" opacity=".5"><path d="M90 50 q-14 -20 0 -40"/><path d="M150 50 q-14 -20 0 -40"/><path d="M210 50 q-14 -20 0 -40"/></g></svg></div>
+ <div class="abs pop" style="left:440px;top:120px;--d:6.2s;--r:6deg">${jar2(130,'#f0a500',false)}</div>
+ <div class="tag pop" style="left:380px;top:480px;--d:7.5s;--r:2deg;background:#fff">air hangat → cair lagi</div>`},
+{d:9,vo:'Tapi madu sekuat ini punya satu pengecualian: bayi di bawah satu tahun tidak boleh makan madu. Kenapa? Jawabannya ada di video berikutnya.',head:L('c','Satu',-2,0)+L('k','pengecualian',1,.4),
+ stage:`<div class="abs slam" style="left:20px;top:110px;--d:.4s;--r:-4deg">${pacifier()}</div>
+ <div class="abs pop" style="left:290px;top:110px;--d:2s"><div class="sh" style="width:240px;height:240px;border-radius:50%;background:#2a7f86;color:#fff6e0;font-weight:900;display:flex;align-items:center;justify-content:center;flex-direction:column"><div style="font-size:90px;line-height:1">&lt; 1</div><div style="font-size:36px">TAHUN</div></div></div>
+ <div class="abs pop" style="left:530px;top:130px;--d:3s">${jar2(150)}</div><div class="abs pop" style="left:545px;top:150px;--d:3.6s">${x()}</div>
+ <div class="abs pop bob" style="left:310px;top:340px;--d:5.6s;font-size:150px;font-weight:900;color:#e2552d;--r:6deg">?</div>
+ <div class="tag pop" style="left:90px;top:510px;--d:6.5s;--r:-2deg;background:#fff">jawabannya: video berikutnya</div>`}
+];
+const C=window.CFG;
+S.forEach((s,i)=>{s.od=s.d;if(C){s.d=C.bounds[i+1]-C.bounds[i];s.k=Math.min(1.6,Math.max(.8,s.od/s.d));}else s.k=1;});
+const total=S.reduce((a,s)=>a+s.d,0);
+function wordTimes(words,a,b){
+ let segs=[],cur=a;
+ if(C){(C.sil).forEach(([s,e])=>{if(e<=a||s>=b)return;if(s>cur)segs.push([cur,Math.min(s,b)]);cur=Math.max(cur,e);});if(cur<b)segs.push([cur,b]);}
+ else segs=[[a+.3,b-.7]];
+ const T=segs.reduce((x,[s,e])=>x+e-s,0),len=words.map(w=>w.length+1),L=len.reduce((x,y)=>x+y,0);let acc=0;
+ return words.map((w,j)=>{let pos=acc/L*T;acc+=len[j];for(const [s,e] of segs){if(pos<=e-s)return s+pos-a;pos-=e-s;}return b-a;});
+}
+let t0=0,html='',extra='';
+S.forEach((s,i)=>{
+ const words=s.vo.split(' ');
+ const wt=wordTimes(words,t0,t0+s.d);
+ /* subtitle per potongan (maks. 6 kata, putus di tanda baca) agar selalu muat 2 baris di zona aman */
+ let ch=[],cur=[];words.forEach((w,j)=>{cur.push(j);if((/[.?!:,]$/.test(w)&&cur.length>=3)||cur.length>=5){ch.push(cur);cur=[];}});
+ if(cur.length){if(cur.length<2&&ch.length)ch[ch.length-1].push(...cur);else ch.push(cur);}
+ const subs=ch.map((idx,n)=>{const cs=n==0?0:Math.max(0,wt[idx[0]]-.05)*s.k,ce=(n<ch.length-1?Math.max(0,wt[ch[n+1][0]]-.05):s.d+1)*s.k;
+  return `<div class="ck" style="--cs:${cs.toFixed(2)}s;--ce:${ce.toFixed(2)}s">`+idx.map(j=>`<span style="--wd:${(wt[j]*s.k).toFixed(2)}s">${words[j]}</span>`).join('')+`</div>`;}).join('');
+ html+=`<section class="scene" data-s="${t0}" data-d="${s.d}" data-k="${s.k}"><div class="hl">${s.head}</div><div class="stage">${s.stage}</div><div class="sub">${subs}</div></section>`;
+ if(s.css)extra+=s.css; t0+=s.d;
+});
+const st=document.createElement('style');st.textContent=extra;document.head.appendChild(st);
+document.getElementById('root').innerHTML=html;
+const scenes=[...document.querySelectorAll('.scene')];
+window.TOTAL=total;
+window.seek=function(t){
+ scenes.forEach(sc=>{
+  const s=+sc.dataset.s,d=+sc.dataset.d,on=t>=s&&t<s+d;
+  sc.style.display=on?'block':'none';
+  if(on){sc.getAnimations({subtree:true}).forEach(a=>{a.pause();a.currentTime=(t-s)*(+sc.dataset.k)*1000;});}
+ });
+ document.getElementById('prog').style.width=(t/total*100)+'%';
+ const m=Math.floor(t/60),sec=Math.floor(t%60);document.getElementById('time').textContent=m+':'+String(sec).padStart(2,'0');
+};
+if(C){['mark','time','prog'].forEach(i=>document.getElementById(i).style.display='none');}
+seek(0);
+</script></body></html>
