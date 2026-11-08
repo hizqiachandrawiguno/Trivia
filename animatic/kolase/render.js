@@ -7,7 +7,7 @@ const fps = +(fpsArg || 24);
 (async () => {
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 720, height: 1280 } });
-  await p.goto('file://' + path.join(__dirname, 'index.html'));
+  await p.goto('file://' + path.join(__dirname, process.env.HTML || 'index.html'));
   await p.waitForTimeout(500);
   const total = await p.evaluate(() => window.TOTAL);
   if (probe) {
