@@ -1,0 +1,33 @@
+<!doctype html><meta charset=utf-8><style>
+*{margin:0;box-sizing:border-box}
+:root{--paper:#f3e9d2;--ink:#3a2312;--honey:#f0a500;--teal:#2a7f86;--coral:#e2552d}
+body{width:1080px;height:1080px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;color:var(--ink)}
+.bg{position:absolute;inset:0}
+.abs{position:absolute}
+.sh{filter:drop-shadow(10px 14px 0 rgba(0,0,0,.25))}
+</style>
+<body>
+<!-- OPSI A: tanda tanya + teks KOK BISA di latar tua -->
+<div id=A style="display:none">
+ <div class=bg style="background:#1f3a3d"></div>
+ <div class="abs sh" style="left:210px;top:150px;width:660px;height:660px;border-radius:50%;background:var(--honey)"></div>
+ <div class=abs style="left:0;top:150px;width:1080px;text-align:center;font-weight:900;font-size:600px;line-height:660px;color:var(--ink)">?</div>
+ <div class="abs sh" style="left:170px;top:790px;width:740px;text-align:center;background:var(--paper);color:var(--ink);font-weight:900;font-size:120px;padding:4px 0 16px;transform:rotate(-3deg)">KOK BISA?</div>
+</div>
+<!-- OPSI B: kaca pembesar di atas toples madu -->
+<div id=B style="display:none">
+ <div class=bg style="background:var(--paper);background-image:radial-gradient(circle at 1px 1px,#3a231218 2px,transparent 2.6px);background-size:26px 26px"></div>
+ <div class="abs sh" style="left:300px;top:240px"><svg width="480" height="576" viewBox="0 0 300 360"><path d="M64 96 Q38 130 44 226 Q50 332 150 338 Q250 332 256 226 Q262 130 236 96Z" fill="#a8613a"/><path d="M78 130 Q62 160 66 230 Q72 318 150 322 Q228 318 234 230 Q238 160 222 130Z" fill="#f0a500"/><path d="M92 150 q-10 50 -4 90" stroke="#ffd36a" stroke-width="12" fill="none" stroke-linecap="round"/><rect x="74" y="72" width="152" height="34" rx="8" fill="#8a4b2a"/></svg></div>
+ <div class="abs sh" style="left:130px;top:170px"><svg width="560" height="560" viewBox="0 0 560 560"><circle cx="260" cy="260" r="190" fill="#cfe9f2" fill-opacity=".45" stroke="#3a2312" stroke-width="40"/><path d="M400 400 L520 520" stroke="#3a2312" stroke-width="56" stroke-linecap="round"/></svg></div>
+ <div class="abs" style="left:150px;top:830px;width:780px;text-align:center;background:var(--ink);color:var(--paper);font-weight:900;font-size:110px;padding:6px 0 16px;letter-spacing:4px;transform:rotate(-2deg)">SATUFAKTA</div>
+</div>
+<!-- OPSI C: monogram SF bergaya kertas -->
+<div id=C style="display:none">
+ <div class=bg style="background:var(--coral)"></div>
+ <div class="abs sh" style="left:150px;top:150px;width:780px;height:780px;background:var(--paper);border-radius:50%"></div>
+ <div class=abs style="left:0;top:150px;width:1080px;text-align:center;font-weight:900;font-size:420px;line-height:780px;color:var(--ink);letter-spacing:-24px">S<span style="color:var(--teal)">F</span></div>
+ <div class="abs" style="left:0;top:700px;width:1080px;text-align:center;font-weight:900;font-size:62px;letter-spacing:10px;color:var(--ink)">SATU FAKTA</div>
+ <div class=abs style="left:670px;top:200px;width:150px;height:150px;background:var(--honey);clip-path:polygon(50% 0,61% 34%,98% 38%,68% 58%,80% 94%,50% 74%,20% 94%,32% 58%,2% 38%,39% 34%);transform:rotate(14deg)"></div>
+</div>
+<script>const o=new URLSearchParams(location.search).get('o');document.getElementById(o).style.display='block';</script>
+</body>
