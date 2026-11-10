@@ -244,21 +244,35 @@ function seek(t){
 window.seek=seek;window._dbg={cam,THREE};window.READY=true;seek(0);
 /* ---------- mode cover/thumbnail: ?cover=1 (render 1080x1920 lewat deviceScaleFactor 1.5) ---------- */
 if(new URLSearchParams(location.search).has('cover')){
- document.querySelectorAll('.hl,.sub,.tg,.big').forEach(e=>e.style.display='none');document.querySelector('.badge').style.top='190px';
- crew.visible=false;applySky(.3);scene.fog.near=50;scene.fog.far=320;
- /* Bulan penuh di langit (tekstur kawah buatan) */
- const mc=document.createElement('canvas');mc.width=512;mc.height=256;const mx=mc.getContext('2d');mx.fillStyle='#d6d6dc';mx.fillRect(0,0,512,256);const rr=rnd(21);
- for(let i=0;i<46;i++){const x=rr()*512,y=rr()*256,r=6+rr()*26;mx.fillStyle='rgba(120,120,132,.55)';mx.beginPath();mx.arc(x,y,r,0,7);mx.fill();mx.strokeStyle='rgba(255,255,255,.55)';mx.lineWidth=3;mx.beginPath();mx.arc(x-2,y-2,r,3.4,5.2);mx.stroke();}
+ document.querySelectorAll('.hl,.sub,.tg,.big').forEach(e=>e.style.display='none');document.querySelector('.badge').style.top='178px';
+ crew.visible=false;scene.children.forEach(o=>{if(o.isGroup&&(Math.abs(o.position.z-(CZ-3.4))<.1||(Math.abs(o.position.x+6.2)<.1&&Math.abs(o.position.z-CZ)<.1)))o.visible=false;});applySky(1);starMat.size=2.6;scene.fog.near=70;scene.fog.far=300;
+ hemi.intensity=.85;sun.intensity=.9;sun.position.set(-8,5,-14);
+ const key=new THREE.PointLight('#ffd08a',26,26,2);key.position.set(-1.2,3.4,-22.6);scene.add(key);
+ const rim=new THREE.DirectionalLight('#8fb4ff',2.4);rim.position.set(3,6,-45);scene.add(rim);
+ /* cahaya lembut (sprite aditif) */
+ const glow=(col,x,y,z,sc)=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');const gr=g.createRadialGradient(128,128,0,128,128,128);gr.addColorStop(0,col+'88');gr.addColorStop(.35,col+'33');gr.addColorStop(1,col+'00');g.fillStyle=gr;g.fillRect(0,0,256,256);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),blending:THREE.AdditiveBlending,depthWrite:false,fog:false,transparent:true}));sp.position.set(x,y,z);sp.scale.set(sc,sc,1);scene.add(sp);};
+ /* Bulan penuh bercahaya */
+ const mc=document.createElement('canvas');mc.width=512;mc.height=256;const mx=mc.getContext('2d');mx.fillStyle='#e4e4ea';mx.fillRect(0,0,512,256);const rr=rnd(21);
+ for(let i=0;i<46;i++){const x=rr()*512,y=rr()*256,r=6+rr()*26;mx.fillStyle='rgba(120,120,140,.5)';mx.beginPath();mx.arc(x,y,r,0,7);mx.fill();mx.strokeStyle='rgba(255,255,255,.6)';mx.lineWidth=3;mx.beginPath();mx.arc(x-2,y-2,r,3.4,5.2);mx.stroke();}
  const mt=new THREE.CanvasTexture(mc);mt.colorSpace=THREE.SRGBColorSpace;
- const moon=new THREE.Mesh(new THREE.SphereGeometry(3.9,40,28),new THREE.MeshStandardMaterial({map:mt,roughness:1,emissive:'#7a7a88',emissiveIntensity:.45}));moon.position.set(4.2,6.8,-44);scene.add(moon);
- pyramid(4.4,5.6,-6.0,-38,32,3);
- cam.position.set(1.0,2.1,-17.6);cam.lookAt(.2,3.0,-30);cam.fov=74;cam.setViewOffset(W,H,0,175,W,H);cam.updateProjectionMatrix();
+ const moon=new THREE.Mesh(new THREE.SphereGeometry(3.6,40,28),new THREE.MeshStandardMaterial({map:mt,roughness:1,emissive:'#b8b8d0',emissiveIntensity:.9}));moon.position.set(3.6,5.0,-35);scene.add(moon);
+ glow('#9db8ff',3.6,5.0,-35.5,15);glow('#ff9a20',0,3.0,-27.9,7);
+ pyramid(4.4,5.6,-4.8,-33,32,3);
+ cam.position.set(.4,1.8,-18.9);cam.lookAt(.1,3.2,-28);cam.fov=66;cam.setViewOffset(W,H,0,150,W,H);cam.updateProjectionMatrix();
  renderer.setPixelRatio(1.5);renderer.setSize(W,H,false);renderer.render(scene,cam);
  const ui=document.getElementById('ui');
- const yr=(txt,cls,a,dx,dy)=>{v3.set(...a).project(cam);const x=(v3.x*.5+.5)*W+dx,y=(-v3.y*.5+.5)*H+dy;const e=document.createElement('div');e.className='tg '+cls;e.textContent=txt;e.style.cssText=`opacity:1;transform:translate(${x}px,${y}px) translate(-50%,-50%) rotate(-2deg)`;ui.appendChild(e);};
- yr('30 SM','y b',[0,3.6,CZ],0,-30);yr('1969','y g',[4.2,6.8,-44],0,12);yr('2560 SM','y a',[-6.0,5.8,-38],0,-26);
- const cv=document.createElement('div');cv.style.cssText='position:absolute;left:30px;right:30px;top:772px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:40';
- [['c','CLEOPATRA',66,-2],['k','LEBIH DEKAT KE',50,1.5],['t','BULAN?',98,-1.5],['h','DARIPADA KE PIRAMIDA',38,1]].forEach(([c,t,fs,r])=>{const l=document.createElement('span');l.className='lab '+c;l.textContent=t;l.style.cssText=`opacity:1;font-size:${fs}px;transform:rotate(${r}deg)`;cv.appendChild(l);});
+ const P=(x,y,z)=>{v3.set(x,y,z).project(cam);return [(v3.x*.5+.5)*W,(-v3.y*.5+.5)*H];};
+ const pA=P(-4.6,3.4,-33),pB=P(-1.1,2.9,-27.4),pC=P(1.1,2.9,-27.4),pD=P(3.0,4.6,-35);
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('width',W);svg.setAttribute('height',H);svg.style.cssText='position:absolute;left:0;top:0;z-index:12';
+ svg.innerHTML=`<defs><marker id="a1" markerUnits="userSpaceOnUse" markerWidth="34" markerHeight="34" refX="22" refY="17" orient="auto"><path d="M0,2 L34,17 L0,32 Z" fill="#f0a500"/></marker><marker id="a2" markerUnits="userSpaceOnUse" markerWidth="34" markerHeight="34" refX="22" refY="17" orient="auto"><path d="M0,2 L34,17 L0,32 Z" fill="#35c4cf"/></marker></defs>
+ <path d="M${pA[0]},${pA[1]} Q${(pA[0]+pB[0])/2},${pA[1]-70} ${pB[0]},${pB[1]}" stroke="#f0a500" stroke-width="9" fill="none" stroke-linecap="round" marker-end="url(#a1)"/>
+ <path d="M${pC[0]},${pC[1]} Q${(pC[0]+pD[0])/2},${pC[1]-70} ${pD[0]},${pD[1]}" stroke="#35c4cf" stroke-width="9" fill="none" stroke-linecap="round" marker-end="url(#a2)"/>`;
+ ui.appendChild(svg);
+ const tag=(txt,cls,x,y,rot)=>{const e=document.createElement('div');e.className='tg '+cls;e.textContent=txt;e.style.cssText=`opacity:1;font-size:30px;transform:translate(${x}px,${y}px) translate(-50%,-50%) rotate(${rot}deg)`;ui.appendChild(e);};
+ tag('2.500 tahun','a',(pA[0]+pB[0])/2-10,(pA[1]+pB[1])/2-96,-4);tag('2.000 tahun','b',(pC[0]+pD[0])/2+14,(pC[1]+pD[1])/2-96,3);
+ const cv=document.createElement('div');cv.style.cssText='position:absolute;left:24px;right:24px;top:760px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:40';
+ [['c','CLEOPATRA',62,-2],['k','LEBIH DEKAT KE',50,1.5],['t','BULAN?!',112,-1.5],['h','DARIPADA KE PIRAMIDA',36,1]].forEach(([c,t,fs,r])=>{const l=document.createElement('span');l.className='lab '+c;l.textContent=t;l.style.cssText=`opacity:1;font-size:${fs}px;transform:rotate(${r}deg)`;cv.appendChild(l);});
  ui.appendChild(cv);window.COVER_READY=true;
 }
 
