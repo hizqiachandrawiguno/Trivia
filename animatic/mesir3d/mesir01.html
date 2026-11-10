@@ -242,4 +242,24 @@ function seek(t){
  subEl.querySelectorAll('span').forEach(sp=>sp.classList.toggle('on',t>=s.wt[+sp.dataset.j]-.02));
 }
 window.seek=seek;window._dbg={cam,THREE};window.READY=true;seek(0);
+/* ---------- mode cover/thumbnail: ?cover=1 (render 1080x1920 lewat deviceScaleFactor 1.5) ---------- */
+if(new URLSearchParams(location.search).has('cover')){
+ document.querySelectorAll('.hl,.sub,.tg,.big').forEach(e=>e.style.display='none');document.querySelector('.badge').style.top='190px';
+ crew.visible=false;applySky(.3);scene.fog.near=50;scene.fog.far=320;
+ /* Bulan penuh di langit (tekstur kawah buatan) */
+ const mc=document.createElement('canvas');mc.width=512;mc.height=256;const mx=mc.getContext('2d');mx.fillStyle='#d6d6dc';mx.fillRect(0,0,512,256);const rr=rnd(21);
+ for(let i=0;i<46;i++){const x=rr()*512,y=rr()*256,r=6+rr()*26;mx.fillStyle='rgba(120,120,132,.55)';mx.beginPath();mx.arc(x,y,r,0,7);mx.fill();mx.strokeStyle='rgba(255,255,255,.55)';mx.lineWidth=3;mx.beginPath();mx.arc(x-2,y-2,r,3.4,5.2);mx.stroke();}
+ const mt=new THREE.CanvasTexture(mc);mt.colorSpace=THREE.SRGBColorSpace;
+ const moon=new THREE.Mesh(new THREE.SphereGeometry(3.9,40,28),new THREE.MeshStandardMaterial({map:mt,roughness:1,emissive:'#7a7a88',emissiveIntensity:.45}));moon.position.set(4.2,6.8,-44);scene.add(moon);
+ pyramid(4.4,5.6,-6.0,-38,32,3);
+ cam.position.set(1.0,2.1,-17.6);cam.lookAt(.2,3.0,-30);cam.fov=74;cam.setViewOffset(W,H,0,175,W,H);cam.updateProjectionMatrix();
+ renderer.setPixelRatio(1.5);renderer.setSize(W,H,false);renderer.render(scene,cam);
+ const ui=document.getElementById('ui');
+ const yr=(txt,cls,a,dx,dy)=>{v3.set(...a).project(cam);const x=(v3.x*.5+.5)*W+dx,y=(-v3.y*.5+.5)*H+dy;const e=document.createElement('div');e.className='tg '+cls;e.textContent=txt;e.style.cssText=`opacity:1;transform:translate(${x}px,${y}px) translate(-50%,-50%) rotate(-2deg)`;ui.appendChild(e);};
+ yr('30 SM','y b',[0,3.6,CZ],0,-30);yr('1969','y g',[4.2,6.8,-44],0,12);yr('2560 SM','y a',[-6.0,5.8,-38],0,-26);
+ const cv=document.createElement('div');cv.style.cssText='position:absolute;left:30px;right:30px;top:772px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:40';
+ [['c','CLEOPATRA',66,-2],['k','LEBIH DEKAT KE',50,1.5],['t','BULAN?',98,-1.5],['h','DARIPADA KE PIRAMIDA',38,1]].forEach(([c,t,fs,r])=>{const l=document.createElement('span');l.className='lab '+c;l.textContent=t;l.style.cssText=`opacity:1;font-size:${fs}px;transform:rotate(${r}deg)`;cv.appendChild(l);});
+ ui.appendChild(cv);window.COVER_READY=true;
+}
+
 </script></body></html>
